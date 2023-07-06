@@ -4,7 +4,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @books = @user.books.page(params[:page]).reverse_order
+    @books = @user.books.where(created_at: params[:created_at].to_date.all_day).page(params[:page]).reverse_order
+    render :search_form
     @book = Book.new
     @today_book = @books.created_today
     @yesterday_book = @books.created_yesterday
@@ -19,6 +20,8 @@ class UsersController < ApplicationController
 
   def edit
   end
+  
+  
 
   def update
     if @user.update(user_params)
