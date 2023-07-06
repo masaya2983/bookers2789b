@@ -4,8 +4,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
-    @books = @user.books.where(created_at: params[:created_at].to_date.all_day).page(params[:page]).reverse_order
-    render :search_form
+    @books = @user.books.page(params[:page]).reverse_order
     @book = Book.new
     @today_book = @books.created_today
     @yesterday_book = @books.created_yesterday
@@ -20,8 +19,20 @@ class UsersController < ApplicationController
 
   def edit
   end
-  
-  
+
+  #一部抜粋
+  def search
+    @user = User.find(params[:user_id])
+    @books = @user.books
+    @book = Book.new
+    if params[:created_at] == ""
+      @search_book = "日付を選択してください"#①
+    else
+      create_at = params[:created_at]
+      @search_book = @books.where(['created_at LIKE ? ', "#{create_at}%"]).count#②
+    end
+  end
+
 
   def update
     if @user.update(user_params)
